@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+
+	<!-- 继承总配置文件的base-default包否则全局视图无法启用 -->
+	<package name="login-action" namespace="/user" extends="base-default">
+	
+	    <!--登陆与注册Action-->
+		<action name="user_*" class="com.cloudDisk.controller.UserAction" method="{1}">
+		     
+		     <!--  返回input  -->
+			 <result name="input"   type="redirectAction"> 
+			    user_toLoginUI
+			 </result>
+			 
+			 <!-- 去往用户信息更新界面 -->
+			 <result name="userInfoUI">/WEB-INF/jsp/user_info.jsp</result>
+			 <!--  去往登录页面  -->
+			 <result name="login">/WEB-INF/jsp/login.jsp</result>
+			 
+		 	 <!--http://blog.csdn.net/H12KJGJ/article/details/53328343?locationNum=15&fps=1 (不同包下的action跳转)  -->
+			 <result name="success" type="redirectAction">
+			      <param name="namespace">/netdisk</param>
+			      <param name="actionName">netdisk_list</param>
+			 </result> 
+			 
+		</action>
+	</package>
+	<package name="netdisk-action" namespace="/netdisk" extends="base-default">
+	
+	     <!--网盘主界面的Action-->
+		<action name="netdisk_*" class="com.cloudDisk.controller.NetDiskAction" method="{1}">
+		     
+		       <!-- 重定向到刷新列表的action  -->
+		     <result name="list" type="redirectAction">
+		        netdisk_list
+		     </result>
+		
+		       <!--  去往文件列表页面  -->
+			 <result name="listUI"  > 
+			     /WEB-INF/jsp/main.jsp
+			 </result>
+		       <!--  去往文件上传界面 -->
+			 <result name="fileUploadUI"  > 
+			     /WEB-INF/jsp/file_upload.jsp
+			 </result>
+			 <result name="download" type="stream">
+                <!-- 运行下载的文件的类型:指定为所有的二进制文件类型（固定） -->
+               <param name="contentType">application/octet-stream</param>
+                <!-- 必须在实现下载的action中写一个getAttrInputStream（）方法，这里会自动调用 -->
+               <param name="inputName">attrInputStream</param>
+                <!-- 下载头，包括：浏览器显示的文件名 fileName 是action定义的属性必须写出该属性的get/set方法 -->
+               <param name="contentDisposition">attachment;filename=${downloadFileName}</param>
+                <!-- 缓冲区大小设置(固定)但是大小是可以改变的 -->
+               <param name="bufferSize">1024</param>
+            </result>
+			 
+		</action>
+	</package>
+
+</struts>
